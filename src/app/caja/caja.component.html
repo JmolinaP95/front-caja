@@ -1,32 +1,18 @@
 <div class="ui-g">
     <p-panel header="Administración de Cajas" [style]="{width: '95%', margin: '0 auto'}">
-        <p-table [value]="data">
+        <p-table [value]="data" [columns]="cols" [paginator]="true" [rows]="8">
             <ng-template pTemplate="header">
                 <tr>
-                    <th>ID Caja</th>
-                    <th>Fecha</th>
-                    <th>Descripción</th>
-                    <th>Estado Registro</th>
-                    <th>Usuario Ingreso</th>
-                    <th>Fecha Ingreso</th>
-                    <th>IP Ingreso</th>
-                    <th>Fecha Modificación</th>
-                    <th>Usuario Modificación</th>
-                    <th>IP Modificación</th>
+                    <th *ngFor="let col of cols" >
+                        {{col.header}}
+                    </tr>
+                    
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-data>
                 <tr>
                     <td>{{ data.id_caja }}</td>
-                    <td>{{ data.fecha | date:'yyyy-MM-dd' }}</td>
-                    <td>{{ data.descripcion }}</td>
-                    <td>{{ data.estado_registro }}</td>
-                    <td>{{ data.usuario_ingreso }}</td>
-                    <td>{{ data.fecha_ingreso | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-                    <td>{{ data.ip_ingreso }}</td>
-                    <td>{{ data.fecha_modificacion | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-                    <td>{{ data.usuario_modificacion }}</td>
-                    <td>{{ data.ip_modificacion }}</td>
+                
                 </tr>
             </ng-template>
         </p-table>
