@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableModule } from 'primeng/table';
 import { CajaComponent } from './caja/caja.component';
 import { HttpClientModule } from '@angular/common/http';
+import {PanelModule} from 'primeng/panel';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     ButtonModule,
     TableModule,
-    HttpClientModule
+    HttpClientModule,
+    PanelModule
   ],
   providers: [],
   bootstrap: [AppComponent]
