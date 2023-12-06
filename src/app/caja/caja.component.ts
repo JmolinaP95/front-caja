@@ -1,35 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { Caja } from 'src/model/caja';  
 import { CajaService } from '../service/caja.service';
-
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-caja',
   templateUrl: './caja.component.html',
   styleUrls: ['./caja.component.css']
 })
 export class CajaComponent implements OnInit {
-
-  cajas: Caja [];
+  data: any [] = [];
   cols: any[] = [];
 
   constructor(private cajaService: CajaService){}
 
-  getAll() {
-    this.cajaService.getAll().subscribe(
-      (result: any) => {
-        for (let i = 0; i < result.length; i++) {
-          let persona = result[i] as Caja;
-          this.cajas.push(persona);
-        }
-      },
-      error => {
-        console.log(error);
-      }
-    );
+  llenarData(){
+    this.cajaService.getAll().subscribe( data => {
+      this.data = data;
+      console.log(this.data);
+    })
   }
-
+  
+  
   ngOnInit() {
-    this.getAll();
-
+    this.llenarData();
   }
+
+
 }
