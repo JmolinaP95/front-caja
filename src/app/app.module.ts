@@ -10,6 +10,14 @@ import { TableModule } from 'primeng/table';
 import { CajaComponent } from './caja/caja.component';
 import { HttpClientModule } from '@angular/common/http';
 import {PanelModule} from 'primeng/panel';
+import { DialogModule } from 'primeng/dialog';
+import { MenubarModule } from 'primeng/menubar';
+import { InputTextModule } from 'primeng/inputtext';
+import {ToastModule} from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService} from 'primeng/api'
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -23,9 +31,21 @@ import {PanelModule} from 'primeng/panel';
     ButtonModule,
     TableModule,
     HttpClientModule,
-    PanelModule
+    PanelModule,
+    DialogModule,
+    MenubarModule,
+    ConfirmDialogModule,
+    InputTextModule,
+    ToastModule,
+    FormsModule,
+    
+    
+  ], 
+  providers: [
+    MessageService,
+    ConfirmationService
   ],
-  providers: [],
   bootstrap: [AppComponent]
+  
 })
 export class AppModule { }
