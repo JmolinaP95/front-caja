@@ -5,6 +5,7 @@ import { MessageService, ConfirmationService, MenuItem } from 'primeng/api';
 
 
 
+
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 @Component({
@@ -18,6 +19,7 @@ export class CajaComponent implements OnInit {
   data: any[] = [];
   cols: any[] = [];
   items: MenuItem[]= [];
+  
 
   displaySaveDialog: boolean = false;
   caja: any = {
@@ -25,6 +27,12 @@ export class CajaComponent implements OnInit {
     fecha: null,
     descripcion: null,
     estado_registro: null,
+    usuario_ingreso: null,
+    fecha_ingreso: null,
+    ip_ingreso: null,
+    fecha_modificacion: null,
+    usuario_modificacion: null,
+    ip_modificacion: null
     // Agrega aquí el resto de los campos de la caja según tu modelo
   };
 
@@ -33,18 +41,42 @@ export class CajaComponent implements OnInit {
     fecha: null,
     descripcion: null,
     estado_registro: null,
+    usuario_ingreso: null,
+    fecha_ingreso: null,
+    ip_ingreso: null,
+    fecha_modificacion: null,
+    usuario_modificacion: null,
+    ip_modificacion: null
     // Agrega aquí el resto de los campos de la caja según tu modelo
   };
+  estadoRegistroOptions: any[] = [
+    { value: 1, label: 'Activo' },
+    { value: 2, label: 'Suspendido' },
+    { value: 0, label: 'Inactivo' }
+  ];
 
   constructor(private cajaService: CajaService, private messageService: MessageService, private confirmService: ConfirmationService) { }
 
   llenarData() {
-    this.cajaService.getAll().subscribe(data => {
-      this.data = data;
-      console.log(this.data);
+    this.cajaService.getAll().subscribe(response => {
+      if (response && response.datos) {
+        this.data = response.datos;
+        console.log(this.data);
+      } else {
+        console.error('La respuesta del servidor no contiene datos válidos:', response);
+      }
     });
   }
-
+  getEstadoRegistroClass(estado: number): string {
+    if (estado === 1) {
+      return 'estado-activo';
+    } else if (estado === 2) {
+      return 'estado-suspendido';
+    } else {
+      return 'estado-inactivo';
+    }
+  }
+  
   showSaveDialog(editar: boolean) {
     if (editar) {
       if (this.selectedCaja != null && this.selectedCaja.id_caja != null) {
@@ -56,24 +88,58 @@ export class CajaComponent implements OnInit {
     } else {
       this.caja = {};
     }
-    this.displaySaveDialog = true;
+
+  this.displaySaveDialog = true;
   }
+ 
 
   save() {
-    this.cajaService.save(this.caja).subscribe(
-      (result: any) => {
-        let caja = result as any;
-        this.validarCaja(caja);
-        this.messageService.add({ severity: 'success', summary: 'Resultado', detail: 'Se guardó la caja correctamente.' });
-        this.displaySaveDialog = false;
-      },
-      error => {
-        console.log(error);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrió un error al guardar la caja.' });
-      }
-    );
+    if (this.caja.id_caja) {
+      // Si ya tiene un ID, es una edición
+      this.cajaService.update(this.caja).subscribe(
+        (result: any) => {
+          let caja = result as any;
+          this.validarCaja(caja);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Resultado',
+            detail: 'Se editó la caja correctamente.',
+          });
+          this.displaySaveDialog = false;
+        },
+        (error) => {
+          console.log(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un error al editar la caja.',
+          });
+        }
+      );
+    } else {
+      // Si no tiene ID, es una creación
+      this.cajaService.save(this.caja).subscribe(
+        (result: any) => {
+          let caja = result as any;
+          this.validarCaja(caja);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Resultado',
+            detail: 'Se guardó la caja correctamente.',
+          });
+          this.displaySaveDialog = false;
+        },
+        (error) => {
+          console.log(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un error al guardar la caja.',
+          });
+        }
+      );
+    }
   }
-
   delete() {
     if (this.selectedCaja == null || this.selectedCaja.id_caja == null) {
       this.messageService.add({ severity: 'warn', summary: 'Advertencia!', detail: 'Por favor seleccione un registro' });
@@ -96,6 +162,8 @@ export class CajaComponent implements OnInit {
     });
   }
 
+  
+
   deleteObject(id_caja: number) {
     let index = this.data.findIndex((e) => e.id_caja == id_caja);
     if (index != -1) {
@@ -116,11 +184,16 @@ export class CajaComponent implements OnInit {
   ngOnInit() {
     this.llenarData();
     this.cols = [
-      { field: 'id_caja', header: 'ID' },
+      { field: 'id_caja', header: 'ID Caja' },
       { field: 'fecha', header: 'Fecha' },
       { field: 'descripcion', header: 'Descripción' },
       { field: 'estado_registro', header: 'Estado Registro' },
-      // Agrega aquí el resto de los campos de la caja según tu modelo
+      { field: 'usuario_ingreso', header: 'Usuario Ingreso' },
+      { field: 'fecha_ingreso', header: 'Fecha Ingreso' },
+      { field: 'ip_ingreso', header: 'IP Ingreso' },
+      { field: 'fecha_modificacion', header: 'Fecha Modificación' },
+      { field: 'usuario_modificacion', header: 'Usuario Modificación' },
+      { field: 'ip_modificacion', header: 'IP Modificación' }
     ];
 
     this.items = [
@@ -132,7 +205,8 @@ export class CajaComponent implements OnInit {
       {
         label: 'Editar',
         icon: 'pi pi-fw pi-pencil',
-        command: () => this.showSaveDialog(true)
+        command: () => this.showSaveDialog(true),
+        
       },
       {
         label: 'Eliminar',

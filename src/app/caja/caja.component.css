@@ -1,0 +1,25 @@
+.estado-activo,
+.estado-inactivo,
+.estado-suspendido {
+  width: 100px; /* Ajusta el ancho según sea necesario */
+  padding: 5px 10px;
+  border: none; /* Elimina los bordes */
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center; /* Alinea el texto en el centro */
+}
+
+.estado-activo {
+  background-color: #75ec79;
+  color: white;
+}
+
+.estado-inactivo {
+  background-color: #fda49d;
+  color: white;
+}
+.estado-suspendido {
+    background-color: #FFD700; /* Amarillo oscuro */
+    color: white;
+  }
