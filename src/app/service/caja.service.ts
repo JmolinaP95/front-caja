@@ -1,36 +1,52 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
+import { Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators'; // Importa el operador tap
 @Injectable({
   providedIn: 'root'
 })
 export class CajaService {
 
-  baseUrl:string = "http://localhost:3000/api/v1/recaudaciones/cajas/";
+  private baseUrl = 'http://localhost:3000/api/v1/recaudaciones/cajas';
+  private cambiosSubject = new Subject<void>();
 
-  constructor(private http:HttpClient) { }
+  cambios$ = this.cambiosSubject.asObservable();
 
-  
-  
-  getAll() : Observable<any>{
-    return this.http.get<any>(this.baseUrl);
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}`);
   }
-  
+
   save(caja: any): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
-    return this.http.post(this.baseUrl, JSON.stringify(caja), { headers: headers });
+    console.log('Datos a enviar:', caja);
+    return this.http.post(`${this.baseUrl}`, JSON.stringify(caja), { headers: headers })
+      .pipe(
+        tap(() => this.notificarCambios())
+      );
   }
-  
-  update(caja: any): Observable<any> {
+
+  update(id: number, caja: any): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
-    return this.http.put(`${this.baseUrl}/${caja.id_caja}`, JSON.stringify(caja), { headers: headers });
+    console.log('Datos a enviar en la solicitud PUT:', caja);
+    return this.http.put(`${this.baseUrl}/${id}`, JSON.stringify(caja), { headers: headers })
+      .pipe(
+        tap(() => this.notificarCambios())
+      );
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    console.log('Datos a enviar:', id);
+    return this.http.delete(`${this.baseUrl}/${id}`)
+      .pipe(
+        tap(() => this.notificarCambios())
+      );
   }
-  
+
+  private notificarCambios() {
+    this.cambiosSubject.next();
+  }
 }
