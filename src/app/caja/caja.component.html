@@ -58,14 +58,16 @@
             <input pInputText id="descripcion" [(ngModel)]="caja.descripcion" />
           </div>
         </div>
-<div class="ui-g-12">
-  <div class="ui-g-4">
-    <label for="estado_registro">Estado Registro</label>
-  </div>
-  <div class="ui-g-8">
-    <p-dropdown id="estado_registro" [(ngModel)]="caja.estado_registro" [options]="estadoRegistroOptions" optionLabel="label"></p-dropdown>
-  </div>
-</div>
+        <div class="ui-g-12">
+          <div class="ui-g-4">
+            <label for="estado_registro">Estado Registro</label>
+          </div>
+          <div class="ui-g-8">
+            <!-- Ajusta el atributo value de acuerdo a tu lógica específica -->
+            <p-dropdown id="estado_registro" [ngModel]="caja.estado_registro" [options]="estadoRegistroOptions" optionLabel="label" placeholder="Seleccionar"></p-dropdown>
+          </div>
+        </div>
+        
        
             
     </div>

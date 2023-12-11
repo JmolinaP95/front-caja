@@ -20,12 +20,15 @@ import {ConfirmationService} from 'primeng/api'
 import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
+import { CommonModule, DatePipe } from '@angular/common'; // Importa DatePipe aquí
 @NgModule({
   declarations: [
     AppComponent,
     CajaComponent
   ],
   imports: [
+    
+    CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -45,6 +48,7 @@ import { DropdownModule } from 'primeng/dropdown';
     
   ], 
   providers: [
+    DatePipe,
     MessageService,
     ConfirmationService
   ],

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CajaService } from '../service/caja.service';
 import { MessageService, ConfirmationService, MenuItem } from 'primeng/api';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-caja',
@@ -36,17 +37,19 @@ export class CajaComponent implements OnInit {
     usuario_modificacion: null,
     ip_modificacion: null,
   };
+  
   estadoRegistroOptions: any[] = [
-    { value: 1, label: 'Activo' },
-    { value: 2, label: 'Suspendido' },
-    { value: 0, label: 'Inactivo' },
+    { value: null, label: 'Seleccionar' },
+    { value: true, label: 'Activo' },
+    { value: false, label: 'Inactivo' },
   ];
 
   constructor(
     private cajaService: CajaService,
     private messageService: MessageService,
-    private confirmService: ConfirmationService
-  ) {}
+    private confirmService: ConfirmationService,
+    private datePipe: DatePipe  
+    ) {}
 
   llenarData() {
     this.cajaService.getAll().subscribe((response) => {
@@ -62,20 +65,28 @@ export class CajaComponent implements OnInit {
     });
   }
 
-  getEstadoRegistroClass(estado: number): string {
-    if (estado === 1) {
-      return 'estado-activo';
-    } else if (estado === 2) {
-      return 'estado-suspendido';
-    } else {
-      return 'estado-inactivo';
-    }
+  getEstadoRegistroClass(estado: boolean): string {
+    return estado ? 'estado-activo' : 'estado-inactivo';
   }
 
   showSaveDialog(editar: boolean) {
     if (editar) {
       if (this.selectedCaja != null && this.selectedCaja.id_caja != null) {
         this.caja = { ...this.selectedCaja };
+  
+        // Asegúrate de que la propiedad estado_registro tiene un valor válido
+        if (this.caja.estado_registro == null) {
+          // Establece un valor predeterminado o realiza la lógica necesaria
+          this.caja.estado_registro = this.estadoRegistroOptions[0].value;
+        }
+  
+        // Convierte la cadena de fecha a un objeto de fecha
+        this.caja.fecha = new Date(this.caja.fecha);
+  
+        // Formatea la fecha en el formato deseado
+        this.caja.fecha = this.datePipe.transform(this.caja.fecha, 'dd/MM/yyyy HH:mm');
+  
+        this.displaySaveDialog = true;
       } else {
         this.messageService.add({
           severity: 'warn',
@@ -85,11 +96,16 @@ export class CajaComponent implements OnInit {
         return;
       }
     } else {
-      this.caja = {};
+      this.caja = {
+        estado_registro: this.estadoRegistroOptions[0].value,
+      };
+      this.displaySaveDialog = true;
     }
-
-    this.displaySaveDialog = true;
   }
+  
+  
+  
+  
 
   save() {
     const dataToSend = {
@@ -211,13 +227,13 @@ export class CajaComponent implements OnInit {
       { field: 'id_caja', header: 'ID Caja' },
       { field: 'fecha', header: 'Fecha' },
       { field: 'descripcion', header: 'Descripción' },
-      { field: 'estado_registro', header: 'Estado Registro' },
+      { field: 'estado_registro', header: 'Estado' },
       { field: 'usuario_ingreso', header: 'Usuario Ingreso' },
-      { field: 'fecha_ingreso', header: 'Fecha Ingreso' },
-      { field: 'ip_ingreso', header: 'IP Ingreso' },
-      { field: 'fecha_modificacion', header: 'Fecha Modificación' },
-      { field: 'usuario_modificacion', header: 'Usuario Modificación' },
-      { field: 'ip_modificacion', header: 'IP Modificación' },
+      { field: 'fecha_ingreso', header: 'Fecha Create' },
+      { field: 'ip_ingreso', header: 'IP Create' },
+      { field: 'fecha_modificacion', header: 'Fecha Mod' },
+      { field: 'usuario_modificacion', header: 'Usuario Mod' },
+      { field: 'ip_modificacion', header: 'IP Mod' },
     ];
   
     this.items = [

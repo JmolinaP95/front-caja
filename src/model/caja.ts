@@ -3,7 +3,7 @@ export class Caja {
       public id_caja: number ,
       public fecha: Date ,
       public descripcion: string ,
-      public estado_registro: number ,
+      public estado_registro: boolean ,
       public usuario_ingreso: string ,
       public fecha_ingreso: Date ,
       public ip_ingreso: string ,

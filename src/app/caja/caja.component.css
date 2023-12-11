@@ -1,6 +1,5 @@
 .estado-activo,
-.estado-inactivo,
-.estado-suspendido {
+.estado-inactivo {
   width: 100px; /* Ajusta el ancho según sea necesario */
   padding: 5px 10px;
   border: none; /* Elimina los bordes */
@@ -19,7 +18,3 @@
   background-color: #fda49d;
   color: white;
 }
-.estado-suspendido {
-    background-color: #FFD700; /* Amarillo oscuro */
-    color: white;
-  }
