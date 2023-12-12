@@ -40,6 +40,7 @@ export class CajaService {
 
   delete(id: number): Observable<any> {
     console.log('Datos a enviar:', id);
+    console.log(`${this.baseUrl}/${id}`);
     return this.http.delete(`${this.baseUrl}/${id}`)
       .pipe(
         tap(() => this.notificarCambios())

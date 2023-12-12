@@ -21,13 +21,14 @@ import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule, DatePipe } from '@angular/common'; // Importa DatePipe aquí
+import { SelectButtonModule } from 'primeng/selectbutton';
 @NgModule({
   declarations: [
     AppComponent,
     CajaComponent
   ],
   imports: [
-    
+    SelectButtonModule,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,

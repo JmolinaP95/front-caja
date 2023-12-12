@@ -25,7 +25,7 @@
               </ng-container>
               <ng-template #estadoRegistroColumn>
                 <button pButton [class]="getEstadoRegistroClass(caja.estado_registro)">
-                  {{caja.estado_registro === 1 ? 'Activo' : 'Inactivo'}}
+                  {{caja.estado_registro === true ? 'Activo' : 'Inactivo'}}
                 </button>
               </ng-template>
             </td>
@@ -40,7 +40,7 @@
           <div class="ui-g-4">
             <label for="id_caja">ID Caja </label>
             <label id="id_caja">{{caja.id_caja}}</label>
-          </div>
+            </div>
         </div>
         <div class="ui-g-12">
           <div class="ui-g-4">
@@ -63,12 +63,17 @@
             <label for="estado_registro">Estado Registro</label>
           </div>
           <div class="ui-g-8">
-            <!-- Ajusta el atributo value de acuerdo a tu lógica específica -->
-            <p-dropdown id="estado_registro" [ngModel]="caja.estado_registro" [options]="estadoRegistroOptions" optionLabel="label" placeholder="Seleccionar"></p-dropdown>
+            <p-selectButton
+              id="estado_registro"
+              [(ngModel)]="caja.estado_registro"
+              [options]="estadoRegistroOptions"
+              optionLabel="label"
+              optionValue="value"
+            ></p-selectButton>
           </div>
         </div>
         
-       
+
             
     </div>
     <p-footer>

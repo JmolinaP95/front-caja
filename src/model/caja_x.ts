@@ -1,0 +1,5 @@
+ class Caja {
+    constructor(
+
+    ) {}
+  }
