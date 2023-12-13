@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators'; // Importa el operador tap
+import { catchError, tap } from 'rxjs/operators'; // Importa el operador tap
 @Injectable({
   providedIn: 'root'
 })
@@ -18,13 +18,24 @@ export class CajaService {
   getAll(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}`);
   }
+  
   getByDateRange(startDate: string, endDate: string): Observable<any> {
     const params = new HttpParams()
       .set('startDate', startDate)
       .set('endDate', endDate);
-      console.log('Parametros a enviar:', params);
-      console.log(`${this.baseUrl}/byDateRange`);
-    return this.http.get<any>(`${this.baseUrl}/byDateRange`, { params });
+  
+    console.log(`Enviando solicitud a: ${this.baseUrl}/byDateRange/${startDate}/${endDate}`);
+    console.log('Parámetros enviados:', params.toString());
+  
+    return this.http.get<any>(`${this.baseUrl}/byDateRange/${startDate}/${endDate}`, { params }).pipe(
+      tap((response) => {
+        console.log('Respuesta recibida:', response);
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        throw error;
+      })
+    );
   }
 
   save(caja: any): Observable<any> {

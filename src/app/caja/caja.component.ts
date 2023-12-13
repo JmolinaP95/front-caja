@@ -57,18 +57,38 @@ export class CajaComponent implements OnInit {
     this.endDate = new Date();
   }
   buscarPorFecha() {
+    debugger;
     // Implementa la lógica para buscar por fecha
     // Puedes utilizar el método llenarData() para realizar la búsqueda
-    this.llenarData();
+    this.llenarData_Rango();
   }
 
-  llenarData() {
+  llenarData_Rango() {
+    debugger;
+  
+    // Formatea las fechas al formato deseado para la consulta
+    const formattedStartDate = this.startDate.toISOString();
+    const formattedEndDate = this.endDate.toISOString();
+  
     // Utiliza el servicio para obtener los datos
-    this.cajaService.getByDateRange(this.startDate.toISOString(), this.endDate.toISOString()).subscribe((response) => {
+    this.cajaService.getByDateRange(formattedStartDate, formattedEndDate).subscribe((response) => {
       if (response && response.datos) {
         this.data = response.datos;
       } else {
         console.error('La respuesta del servidor no contiene datos válidos:', response);
+      }
+    });
+  }
+  llenarData() {
+    this.cajaService.getAll().subscribe((response) => {
+      if (response && response.datos) {
+        this.data = response.datos;
+
+      } else {
+        console.error(
+          'La respuesta del servidor no contiene datos válidos:',
+          response
+        );
       }
     });
   }

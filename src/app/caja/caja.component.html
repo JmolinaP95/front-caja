@@ -2,6 +2,9 @@
   <p-toast></p-toast>
   <p-confirmDialog header="Confirmación" acceptLabel="Si" rejectLabel="No" icon="pi pi-exclamation-triangle"></p-confirmDialog>
   <p-panel header="Administración de Cajas" [style]="{width: '90%', margin: '0 auto'}">
+    <div style="margin-bottom: 20px">
+      <p-menubar [model]="items"></p-menubar>
+    </div>
       <div style="margin-bottom: 20px">
           <!-- Nuevos campos de entrada para fechas y botón de búsqueda -->
           <div class="ui-g-12">
