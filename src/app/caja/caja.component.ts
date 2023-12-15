@@ -57,7 +57,7 @@ export class CajaComponent implements OnInit {
     this.endDate = new Date();
   }
   buscarPorFecha() {
-    debugger;
+   
     // Implementa la lógica para buscar por fecha
     // Puedes utilizar el método llenarData() para realizar la búsqueda
     this.llenarData_Rango();
@@ -73,7 +73,7 @@ export class CajaComponent implements OnInit {
     // Utiliza el servicio para obtener los datos
     this.cajaService.getByDateRange(formattedStartDate, formattedEndDate).subscribe((response) => {
       if (response && response.datos) {
-        this.data = response.datos;
+        this.data = response.datos.cajasEnRango;
       } else {
         console.error('La respuesta del servidor no contiene datos válidos:', response);
       }

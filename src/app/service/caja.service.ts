@@ -13,20 +13,22 @@ export class CajaService {
 
   cambios$ = this.cambiosSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}`);
   }
-  
+
   getByDateRange(startDate: string, endDate: string): Observable<any> {
+    const Number = "Opcion true";
     const params = new HttpParams()
       .set('startDate', startDate)
-      .set('endDate', endDate);
-  
+      .set('endDate', endDate)
+      .set('Op_Filtro', Number);
+
     console.log(`Enviando solicitud a: ${this.baseUrl}/byDateRange/${startDate}/${endDate}`);
     console.log('Parámetros enviados:', params.toString());
-  
+
     return this.http.get<any>(`${this.baseUrl}/byDateRange/${startDate}/${endDate}`, { params }).pipe(
       tap((response) => {
         console.log('Respuesta recibida:', response);
@@ -59,8 +61,8 @@ export class CajaService {
   }
 
   delete(id: number): Observable<any> {
-    
-    
+
+
     return this.http.delete(`${this.baseUrl}/${id}`)
       .pipe(
         tap(() => this.notificarCambios())
