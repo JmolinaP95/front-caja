@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { ButtonModule } from 'primeng/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableModule } from 'primeng/table';
-import { CajaComponent } from './caja/caja.component';
+import { RubloComponent } from './caja/rublo.component';
 import { HttpClientModule } from '@angular/common/http';
 import {PanelModule} from 'primeng/panel';
 import { DialogModule } from 'primeng/dialog';
@@ -25,11 +25,12 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 @NgModule({
   declarations: [
     AppComponent,
-    CajaComponent
+    RubloComponent
   ],
   imports: [
     SelectButtonModule,
     CommonModule,
+    
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

@@ -1,0 +1,107 @@
+<div class="ui-g">
+    <p-toast></p-toast>
+    <p-confirmDialog header="Confirmación" acceptLabel="Si" rejectLabel="No" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+    <p-panel header="Administración de Rublos" [style]="{width: '90%', margin: '0 auto'}">
+        <div style="margin-bottom: 20px">
+            <p-menubar [model]="items"></p-menubar>
+        </div>
+        <div style="margin-bottom: 20px">
+            <!-- Nuevos campos de entrada para fechas y botón de búsqueda -->
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="startDate">Fecha de Inicio</label>
+                </div>
+                <div class="ui-g-8">
+                    <p-calendar id="startDate" [(ngModel)]="startDate"></p-calendar>
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="endDate">Fecha de Fin</label>
+                </div>
+                <div class="ui-g-8">
+                    <p-calendar id="endDate" [(ngModel)]="endDate"></p-calendar>
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <button pButton icon="pi pi-search" (click)="buscarPorFecha()" label="Buscar"></button>
+            </div>
+        </div>
+        <p-table [value]="data" [columns]="cols" [responsive]="true" selectionMode="single" [(selection)]="selectedRublo"
+            dataKey="id_mant_ctas_rubro" [paginator]="true" [rows]="15">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rublo let-columns="columns">
+                <tr [pSelectableRow]="rublo">
+                    <td *ngFor="let col of columns">
+                        <ng-container *ngIf="col.field !== 'estado_registro'; else estadoRegistroColumn">
+                            {{rublo[col.field]}}
+                        </ng-container>
+                        <ng-template #estadoRegistroColumn>
+                            <button pButton [class]="getEstadoRegistroClass(rublo.estado_registro)">
+                                {{rublo.estado_registro === true ? 'Activo' : 'Inactivo'}}
+                            </button>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <p-dialog header="Rublo" [responsive]="true" [style]="{width: '500px', height: '600px'}"
+        [(visible)]="displaySaveDialog" [modal]="true">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="id_mant_ctas_rubro">ID Rublo </label>
+                    <label id="id_mant_ctas_rubro">{{rublo.id_mant_ctas_rubro}}</label>
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="fecha">Fecha</label>
+                </div>
+                <div class="ui-g-8">
+                    <p-calendar id="fecha" [(ngModel)]="rublo.fecha"></p-calendar>
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="periodo">Periodo</label>
+                </div>
+                <div class="ui-g-8">
+                    <p-calendar id="periodo" [(ngModel)]="rublo.periodo"></p-calendar>
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="descripcion">Descripción</label>
+                </div>
+                <div class="ui-g-8">
+                    <input pInputText id="descripcion" [(ngModel)]="rublo.descripcion" />
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <div class="ui-g-4">
+                    <label for="estado_registro">Estado Registro</label>
+                </div>
+                <div class="ui-g-8">
+                    <p-selectButton id="estado_registro" [(ngModel)]="rublo.estado_registro"
+                        [options]="estadoRegistroOptions" optionLabel="label" optionValue="value"></p-selectButton>
+                </div>
+            </div>
+        </div>
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                <button type="button" pButton icon="pi pi-check" (click)="save()" label="Guardar"></button>
+            </div>
+        </p-footer>
+    </p-dialog>
+</div>

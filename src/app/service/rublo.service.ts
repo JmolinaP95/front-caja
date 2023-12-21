@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators'; // Importa el operador tap
+import { catchError, tap } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
-export class CajaService {
+export class RubloService {
 
-  private baseUrl = 'http://localhost:3000/api/v1/recaudaciones/cajas';
+  private baseUrl = 'http://localhost:3000/api/v1/rentas/rublos/rublos';  // Cambiado a la nueva URL
   private cambiosSubject = new Subject<void>();
 
   cambios$ = this.cambiosSubject.asObservable();
@@ -18,7 +18,9 @@ export class CajaService {
   getAll(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}`);
   }
-
+  getAllServicios(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/servicios`);
+  }
   getByDateRange(startDate: string, endDate: string): Observable<any> {
     const Number = "Opcion true";
     const params = new HttpParams()
@@ -54,16 +56,14 @@ export class CajaService {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     console.log('Datos a enviar en la solicitud PUT:', caja);
-    return this.http.put(`${this.baseUrl}/${id}`, JSON.stringify(caja), { headers: headers })
+    return this.http.put(`${this.baseUrl}${id}`, JSON.stringify(caja), { headers: headers })
       .pipe(
         tap(() => this.notificarCambios())
       );
   }
 
   delete(id: number): Observable<any> {
-
-
-    return this.http.delete(`${this.baseUrl}/${id}`)
+    return this.http.delete(`${this.baseUrl}${id}`)
       .pipe(
         tap(() => this.notificarCambios())
       );

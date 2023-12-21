@@ -1,44 +1,59 @@
 import { Component, OnInit } from '@angular/core';
-import { CajaService } from '../service/caja.service';
+import { RubloService } from '../service/rublo.service';  // Importa el nuevo servicio
 import { MessageService, ConfirmationService, MenuItem } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 import { SelectItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-caja',
-  templateUrl: './caja.component.html',
-  styleUrls: ['./caja.component.css'],
+  selector: 'app-rublo',
+  templateUrl: './rublo.component.html',
+  styleUrls: ['./rublo.component.css'],
 })
-export class CajaComponent implements OnInit {
+export class RubloComponent implements OnInit {
   startDate: Date;
   endDate: Date;
   data: any[] = [];
+  servicios: any[] = [];
+  selectedServicio: any;
   cols: any[] = [];
   items: MenuItem[] = [];
   displaySaveDialog: boolean = false;
-  caja: any = {
-    id_caja: null,
+
+  rublo: any = {
+    id_mant_ctas_rubro: null,
     fecha: null,
+    periodo: null,
     descripcion: null,
     estado_registro: null,
+    cta_ing: null,
+    cta_cxc: null,
+    valor: null,
+    tipo_rubro: null,
     usuario_ingreso: null,
     fecha_ingreso: null,
     ip_ingreso: null,
     fecha_modificacion: null,
     usuario_modificacion: null,
     ip_modificacion: null,
+    id_servicio: null
   };
-  selectedCaja: any = {
-    id_caja: null,
+  selectedRublo: any = {
+    id_mant_ctas_rubro: null,
     fecha: null,
+    periodo: null,
     descripcion: null,
     estado_registro: null,
+    cta_ing: null,
+    cta_cxc: null,
+    valor: null,
+    tipo_rubro: null,
     usuario_ingreso: null,
     fecha_ingreso: null,
     ip_ingreso: null,
     fecha_modificacion: null,
     usuario_modificacion: null,
     ip_modificacion: null,
+    id_servicio: null
   };
 
   estadoRegistroOptions: SelectItem[] = [
@@ -47,7 +62,7 @@ export class CajaComponent implements OnInit {
   ];
 
   constructor(
-    private cajaService: CajaService,
+    private rubloService: RubloService,  // Cambia el nombre del servicio
     private messageService: MessageService,
     private confirmService: ConfirmationService,
     private datePipe: DatePipe
@@ -56,41 +71,42 @@ export class CajaComponent implements OnInit {
     this.startDate = new Date();
     this.endDate = new Date();
   }
+
   buscarPorFecha() {
-   
-    // Implementa la lógica para buscar por fecha
-    // Puedes utilizar el método llenarData() para realizar la búsqueda
     this.llenarData_Rango();
   }
 
   llenarData_Rango() {
-    debugger;
-  
-    // Formatea las fechas al formato deseado para la consulta
     const formattedStartDate = this.startDate.toISOString();
     const formattedEndDate = this.endDate.toISOString();
-  
-    // Utiliza el servicio para obtener los datos
-    this.cajaService.getByDateRange(formattedStartDate, formattedEndDate).subscribe((response) => {
+
+    this.rubloService.getByDateRange(formattedStartDate, formattedEndDate).subscribe((response) => {
       if (response && response.datos) {
-        this.data = response.datos.cajasEnRango;
+        this.data = response.datos.rublosEnRango;
       } else {
         console.error('La respuesta del servidor no contiene datos válidos:', response);
       }
     });
   }
+
   llenarData() {
-    this.cajaService.getAll().subscribe((response) => {
+    this.rubloService.getAll().subscribe((response) => {
       if (response && response.datos) {
         this.data = response.datos;
-
       } else {
-        console.error(
-          'La respuesta del servidor no contiene datos válidos:',
-          response
-        );
+        console.error('La respuesta del servidor no contiene datos válidos:', response);
       }
     });
+  }
+  llenarServicios(){
+    this.rubloService.getAllServicios().subscribe((response) => {
+      if (response && response.datos) {
+        this.servicios = response.datos;
+      } else {
+        console.error('La respuesta del servidor no contiene datos válidos:', response);
+      }
+    });
+
   }
 
   getEstadoRegistroClass(estado: boolean): string {
@@ -106,31 +122,31 @@ export class CajaComponent implements OnInit {
 
   updateEstadoRegistro(value: boolean) {
     console.log("Dentro del updateEstadoRegistro");
-    console.log("Valor actual updateEstadoRegistro caja.estado_registro:" + this.caja.estado_registro + " value: " + value);
+    console.log("Valor actual updateEstadoRegistro rublo.estado_registro:" + this.rublo.estado_registro + " value: " + value);
 
     // Asegúrate de que el valor sea booleano
-    this.caja.estado_registro = value;
+    this.rublo.estado_registro = value;
   }
 
   showSaveDialog(editar: boolean) {
     if (editar) {
-      if (this.selectedCaja != null && this.selectedCaja.id_caja != null) {
-        this.caja = { ...this.selectedCaja };
+      if (this.selectedRublo != null && this.selectedRublo.id_mant_ctas_rubro != null) {
+        this.rublo = { ...this.selectedRublo };
 
-        if (this.caja.estado_registro == null || this.caja.estado_registro == undefined) {
-          this.caja.estado_registro = this.estadoRegistroOptions[0].value;
+        if (this.rublo.estado_registro == null || this.rublo.estado_registro == undefined) {
+          this.rublo.estado_registro = this.estadoRegistroOptions[0].value;
         }
 
         // Convierte la cadena de fecha a un objeto de fecha
-        this.caja.fecha = new Date(this.caja.fecha);
+        this.rublo.fecha = new Date(this.rublo.fecha);
 
         // Formatea la fecha en el formato deseado
-        this.caja.fecha = this.datePipe.transform(this.caja.fecha, 'dd/MM/yyyy HH:mm');
+        this.rublo.fecha = this.datePipe.transform(this.rublo.fecha, 'dd/MM/yyyy HH:mm');
 
-        console.log("Valor a buscar" + this.caja.estado_registro);
-        this.caja.estado_registro = this.estadoRegistroOptions.find(option => option.value === this.caja.estado_registro)?.value;
+        console.log("Valor a buscar" + this.rublo.estado_registro);
+        this.rublo.estado_registro = this.estadoRegistroOptions.find(option => option.value === this.rublo.estado_registro)?.value;
 
-        this.updateEstadoRegistro(this.caja.estado_registro);
+        this.updateEstadoRegistro(this.rublo.estado_registro);
 
         this.displaySaveDialog = true;
       } else {
@@ -142,7 +158,7 @@ export class CajaComponent implements OnInit {
         return;
       }
     } else {
-      this.caja = {
+      this.rublo = {
         estado_registro: this.estadoRegistroOptions[0].value,
       };
       this.displaySaveDialog = true;
@@ -151,31 +167,37 @@ export class CajaComponent implements OnInit {
 
   save() {
     console.log("METODO SAVE");
-    console.log("This caja=" + this.caja.estado_registro);
-    console.log("This selectedCaja=" + this.selectedCaja.estado_registro);
+    console.log("This rublo=" + this.rublo.estado_registro);
+    console.log("This selectedRublo=" + this.selectedRublo.estado_registro);
 
     const dataToSend = {
-      fecha: this.caja.fecha,
-      descripcion: this.caja.descripcion,
-      estado_registro: this.caja.estado_registro,
-      usuario_ingreso: this.caja.usuario_ingreso,
-      fecha_ingreso: this.caja.fecha_ingreso,
-      ip_ingreso: this.caja.ip_ingreso,
-      fecha_modificacion: this.caja.fecha_modificacion,
-      usuario_modificacion: this.caja.usuario_modificacion,
-      ip_modificacion: this.caja.ip_modificacion,
+      fecha: this.rublo.fecha,
+      periodo: this.rublo.periodo,
+      descripcion: this.rublo.descripcion,
+      estado_registro: this.rublo.estado_registro,
+      cta_ing: this.rublo.cta_ing,
+      cta_cxc: this.rublo.cta_cxc,
+      valor: this.rublo.valor,
+      tipo_rubro: this.rublo.tipo_rubro,
+      usuario_ingreso: this.rublo.usuario_ingreso,
+      fecha_ingreso: this.rublo.fecha_ingreso,
+      ip_ingreso: this.rublo.ip_ingreso,
+      fecha_modificacion: this.rublo.fecha_modificacion,
+      usuario_modificacion: this.rublo.usuario_modificacion,
+      ip_modificacion: this.rublo.ip_modificacion,
+      id_servicio: this.rublo.id_servicio
     };
 
-    if (this.caja.id_caja) {
+    if (this.rublo.id_mant_ctas_rubro) {
       // Actualizar
-      this.cajaService.update(this.caja.id_caja, dataToSend).subscribe(
+      this.rubloService.update(this.rublo.id_mant_ctas_rubro, dataToSend).subscribe(
         (result: any) => {
-          let caja = result as any;
-          this.validarCaja(caja);
+          let rublo = result as any;
+          this.validarRublo(rublo);
           this.messageService.add({
             severity: 'success',
             summary: 'Resultado',
-            detail: 'Se editó la caja correctamente.',
+            detail: 'Se editó el rublo correctamente.',
           });
           this.displaySaveDialog = false;
         },
@@ -184,20 +206,20 @@ export class CajaComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Ocurrió un error al editar la caja. Consulta la consola para más detalles.',
+            detail: 'Ocurrió un error al editar el rublo. Consulta la consola para más detalles.',
           });
         }
       );
     } else {
       // Guardar
-      this.cajaService.save(dataToSend).subscribe(
+      this.rubloService.save(dataToSend).subscribe(
         (result: any) => {
-          let caja = result as any;
-          this.validarCaja(caja);
+          let rublo = result as any;
+          this.validarRublo(rublo);
           this.messageService.add({
             severity: 'success',
             summary: 'Resultado',
-            detail: 'Se guardó la caja correctamente.',
+            detail: 'Se guardó el rublo correctamente.',
           });
           this.displaySaveDialog = false;
         },
@@ -206,7 +228,7 @@ export class CajaComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Ocurrió un error al guardar la caja. Consulta la consola para más detalles.',
+            detail: 'Ocurrió un error al guardar el rublo. Consulta la consola para más detalles.',
           });
         }
       );
@@ -214,7 +236,7 @@ export class CajaComponent implements OnInit {
   }
 
   delete() {
-    if (!this.selectedCaja || !this.selectedCaja.id_caja) {
+    if (!this.selectedRublo || !this.selectedRublo.id_mant_ctas_rubro) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia!',
@@ -226,7 +248,7 @@ export class CajaComponent implements OnInit {
     this.confirmService.confirm({
       message: '¿Está seguro que desea eliminar el registro?',
       accept: () => {
-        this.cajaService.delete(this.selectedCaja.id_caja).subscribe(
+        this.rubloService.delete(this.selectedRublo.id_mant_ctas_rubro).subscribe(
           (response: any) => {
             if (response && response.error === false && response.codigo === 200) {
               const cantidadEliminada = response.datos?.datos?.[0];
@@ -235,21 +257,21 @@ export class CajaComponent implements OnInit {
                 this.messageService.add({
                   severity: 'success',
                   summary: 'Resultado',
-                  detail: 'Se eliminó la caja correctamente.',
+                  detail: 'Se eliminó el rublo correctamente.',
                 });
-                this.deleteObject(this.selectedCaja.id_caja);
+                this.deleteObject(this.selectedRublo.id_mant_ctas_rubro);
               } else {
                 this.messageService.add({
                   severity: 'warn',
                   summary: 'Advertencia',
-                  detail: 'La caja no existe o ya ha sido eliminada.',
+                  detail: 'El rublo no existe o ya ha sido eliminado.',
                 });
               }
             } else {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Ocurrió un error al eliminar la caja. Consulta la consola para más detalles.',
+                detail: 'Ocurrió un error al eliminar el rublo. Consulta la consola para más detalles.',
               });
             }
           },
@@ -258,7 +280,7 @@ export class CajaComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Ocurrió un error al eliminar la caja.',
+              detail: 'Ocurrió un error al eliminar el rublo.',
             });
           }
         );
@@ -266,20 +288,20 @@ export class CajaComponent implements OnInit {
     });
   }
 
-  deleteObject(id_caja: number) {
-    let index = this.data.findIndex((e) => e.id_caja == id_caja);
-    if (index != -1) {
+  deleteObject(id_mant_ctas_rubro: number) {
+    let index = this.data.findIndex((e) => e.id_mant_ctas_rubro == id_mant_ctas_rubro);
+    if (index !== -1) {
       this.data.splice(index, 1);
     }
   }
 
-  validarCaja(caja: any) {
-    let index = this.data.findIndex((e) => e.id_caja == caja.id_caja);
+  validarRublo(rublo: any) {
+    let index = this.data.findIndex((e) => e.id_mant_ctas_rubro == rublo.id_mant_ctas_rubro);
 
-    if (index != -1) {
-      this.data[index] = caja;
+    if (index !== -1) {
+      this.data[index] = rublo;
     } else {
-      this.data.push(caja);
+      this.data.push(rublo);
     }
   }
 
@@ -289,16 +311,22 @@ export class CajaComponent implements OnInit {
 
     // Configura las columnas de la tabla
     this.cols = [
-      { field: 'id_caja', header: 'ID Caja' },
+      { field: 'id_mant_ctas_rubro', header: 'ID Rublo' },
       { field: 'fecha', header: 'Fecha' },
+      { field: 'periodo', header: 'Periodo' },
       { field: 'descripcion', header: 'Descripción' },
       { field: 'estado_registro', header: 'Estado' },
+      { field: 'cta_ing', header: 'Cta Ingreso' },
+      { field: 'cta_cxc', header: 'Cta CXC' },
+      { field: 'valor', header: 'Valor' },
+      { field: 'tipo_rubro', header: 'Tipo Rubro' },
       { field: 'usuario_ingreso', header: 'Usuario Ingreso' },
       { field: 'fecha_ingreso', header: 'Fecha Create' },
       { field: 'ip_ingreso', header: 'IP Create' },
       { field: 'fecha_modificacion', header: 'Fecha Mod' },
       { field: 'usuario_modificacion', header: 'Usuario Mod' },
       { field: 'ip_modificacion', header: 'IP Mod' },
+      { field: 'id_servicio', header: 'ID Servicio' }
     ];
 
     // Configura los elementos del menú
@@ -321,7 +349,7 @@ export class CajaComponent implements OnInit {
     ];
 
     // Suscríbete al observable de cambios en el servicio
-    this.cajaService.cambios$.subscribe(() => {
+    this.rubloService.cambios$.subscribe(() => {
       // Realiza las actualizaciones necesarias en la vista
       this.llenarData();
     });
